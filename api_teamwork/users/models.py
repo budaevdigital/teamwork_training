@@ -20,7 +20,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     join_date = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'username']
+    REQUIRED_FIELDS = ['username']
     
     class Meta:
         verbose_name = "User"
