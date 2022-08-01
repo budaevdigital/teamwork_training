@@ -1,91 +1,52 @@
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework import generics, renderers
 from .models import Reviews, Comment
 from .serializers import ReviewSerializer, CommentSerializer
 
 
-@api_view(['GET', 'POST'])
-def review_list(request, format=None):
-    """
-    List all code reviews, or create a new review.
-    """
-    if request.method == 'GET':
-        reviews = Reviews.objects.all()
-        serializer = ReviewSerializer(reviews, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = ReviewSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ReviewList(generics.ListCreateAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = ReviewSerializer
 
 
-def comment_list(request, format=None):
-    """
-    List all code comments, or create a new comment.
-    """
-    if request.method == 'GET':
-        comments = Comment.objects.all()
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = CommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = ReviewSerializer
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def review_detail(request, pk, format=None):
-    """
-    Retrieve, update or delete a code review.
-    """
-    try:
-        review = Reviews.objects.get(pk=pk)
-    except Reviews.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-
-    if request.method == 'GET':
-        serializer = ReviewSerializer(review)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = ReviewSerializer(review, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        review.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class CommentList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
 
-def comment_detail(request, pk, format=None):
-    """
-    Retrieve, update or delete a code review.
-    """
-    try:
-        comment = Comment.objects.get(pk=pk)
-    except Comment.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
-    if request.method == 'GET':
-        serializer = CommentSerializer(comment)
-        return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = CommentSerializer(comment, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ReviewHighlight(generics.GenericAPIView):
+    queryset = Reviews.objects.all()
+    renderer_classes = [renderers.StaticHTMLRenderer]
 
-    elif request.method == 'DELETE':
-        comment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get(self, request, *args, **kwargs):
+        review = self.get_object()
+        return Response(review.highlighted)
+
+
+class CommentHighlight(generics.GenericAPIView):
+    queryset = Comment.objects.all()
+    renderer_classes = [renderers.StaticHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        comment = self.get_object()
+        return Response(comment.highlighted)
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'reviews': reverse('review-list', request=request, format=format),
+        'comments': reverse('comment-list', request=request, format=format)
+    })

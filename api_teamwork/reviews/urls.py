@@ -3,10 +3,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
 urlpatterns = [
-    path('reviews/', views.review_list),
-    path('reviews/<int:pk>', views.review_detail),
-    path('comments/', views.comment_list),
-    path('comments/<int:pk>', views.comment_detail),
+    path('', views.api_root),
+    path('/<int:pk>/highlight', views.ReviewHighlight.as_view()),
+    path('comment/<int:pk>/highlight', views.CommentHighlight.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
