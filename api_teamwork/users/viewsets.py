@@ -1,6 +1,5 @@
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
-
 from users.serializers import UserSerializer
 from users.services import UserViewSetService
 

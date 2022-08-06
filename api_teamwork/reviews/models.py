@@ -1,14 +1,13 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from users.models import CustomUser
+from api_teamwork.settings import AUTH_USER_MODEL 
 
 
 class Score(models.Model):
-    CHOICES = models.IntegerField('Оценка',validators=(
+    score_field = models.IntegerField('Оценка',validators=(
             MinValueValidator(1),
             MaxValueValidator(10)),
         error_messages={'validators': 'Допустимая оценка от 1 до 10!'})
-    score_field = models.IntegerField(choices=CHOICES)
     voted_on = models.DateTimeField(auto_now=True)
 
 
@@ -18,7 +17,7 @@ class Reviews(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
     upd_date = models.DateTimeField(auto_now=True)
     score = models.ForeignKey(Score, on_delete=models.CASCADE)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('author', 'score')
