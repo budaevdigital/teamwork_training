@@ -5,7 +5,7 @@ from users import viewsets
 app_name = "users"
 
 router = SimpleRouter()
-router.register("users", viewsets.CustomUserViewSet, basename="customuser")
+router.register("users", viewsets.CustomUserViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

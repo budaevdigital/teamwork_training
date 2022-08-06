@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'reviews',
-    'users',
-    'titles'
+    'reviews.apps.ReviewsConfig',
+    'users.apps.UsersConfig',
+    'titles.apps.TitlesConfig',
 ]
 
 MIDDLEWARE = [
@@ -85,8 +85,6 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "users.CustomUser"
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -129,3 +127,6 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

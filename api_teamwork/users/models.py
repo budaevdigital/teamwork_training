@@ -1,9 +1,8 @@
-from pickle import TRUE
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 
 
-class CustomUser(AbstractUser, PermissionsMixin):
+class CustomUser(AbstractUser):
 
     USER = 'User'
     MODERATOR = 'Moderator'
@@ -15,7 +14,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
         (ADMIN, 'Админ'),
     )
     
-    username = models.CharField(max_length=50, unique=True)
+    username = models.CharField(max_length=50)
     email = models.EmailField(max_length=254, unique=True)
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
@@ -33,3 +32,18 @@ class CustomUser(AbstractUser, PermissionsMixin):
         verbose_name = "User"
         verbose_name_plural = "Users"
         ordering = ["-id"]
+
+    def __str__(self):
+        return self.username
+
+    @property
+    def is_user(self):
+        return self.role == self.USER
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN
