@@ -1,9 +1,12 @@
-from django.urls import path
-from users.viewsets import UserViewSet
 from rest_framework.routers import DefaultRouter
+from django.urls import include, path
+from users.viewsets import UserViewSet
+
+app_name = "users"
 
 router = DefaultRouter()
-router.register("/api/v1/auth/signup/", UserViewSet, basename="customuser")
+router.register("auth/signup/", UserViewSet, basename="customuser")
 
-
-urlpatterns = [] 
+urlpatterns = [
+    path("api/v1/", include(router.urls)),
+    ]
