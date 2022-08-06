@@ -1,9 +1,13 @@
 from django.db import models
-from api_teamwork.users.models import CustomUser
+from django.core.validators import MinValueValidator, MaxValueValidator
+from users.models import CustomUser
 
 
 class Score(models.Model):
-    CHOICES = [(i, i) for i in range(11)]
+    CHOICES = models.IntegerField('Оценка',validators=(
+            MinValueValidator(1),
+            MaxValueValidator(10)),
+        error_messages={'validators': 'Допустимая оценка от 1 до 10!'})
     score_field = models.IntegerField(choices=CHOICES)
     voted_on = models.DateTimeField(auto_now=True)
 

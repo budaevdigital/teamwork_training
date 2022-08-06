@@ -15,12 +15,14 @@ class CustomUser(AbstractUser, PermissionsMixin):
     last_name = models.CharField(max_length=50, blank=True)
     role = models.CharField(max_length = 20,
                             choices = ROLE_CHOICES,
-                            default = 'anonim', blank=True
+                            default = "anonim", blank=True
                             )
     join_date = models.DateTimeField(auto_now_add=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+    AUTH_USER_MODEL = "users.CustomUser"
+    
     
     class Meta:
         verbose_name = "User"
