@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from api_teamwork.settings import AUTH_USER_MODEL 
+from api_teamwork.settings import AUTH_USER_MODEL
 
 
 class Score(models.Model):
@@ -30,12 +30,13 @@ class Comment(models.Model):
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
+    author = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ('created',)
+        ordering = ('created', 'author')
 
     def __str__(self):
         return 'Comment by {} on {}'.format(self.name, self.post)
