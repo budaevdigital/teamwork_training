@@ -4,26 +4,31 @@ from rest_framework.reverse import reverse
 from rest_framework import generics, renderers
 from .models import Reviews, Comment
 from .serializers import ReviewSerializer, CommentSerializer
+from users.permissions import AdminStaffOnly, AdminOrReadOnly, AuthorModeratorAdminOrSafeMethodOnly
 
 
 class ReviewList(generics.ListCreateAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [AdminOrReadOnly]
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [AdminStaffOnly|AuthorModeratorAdminOrSafeMethodOnly]
 
 
 class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [AdminOrReadOnly]
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = [AdminStaffOnly | AuthorModeratorAdminOrSafeMethodOnly]
 
 
 class ReviewHighlight(generics.GenericAPIView):
