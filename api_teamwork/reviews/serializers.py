@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from .models import Reviews, Comment
+from .models import Review, Comment
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Reviews
+        model = Review
         fields = ('id', 'title', 'text', 'score', 'author')
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ('id', 'post', 'name', 'email', 'body', 'author')
+        fields = ('id', 'reviews', 'name', 'email', 'body', 'author')

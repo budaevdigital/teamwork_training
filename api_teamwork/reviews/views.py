@@ -2,37 +2,49 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import generics, renderers
-from .models import Reviews, Comment
+from .models import Review, Comment
 from .serializers import ReviewSerializer, CommentSerializer
 from users.permissions import AdminStaffOnly, AdminOrReadOnly, AuthorModeratorAdminOrSafeMethodOnly
 
 
 class ReviewList(generics.ListCreateAPIView):
-    queryset = Reviews.objects.all()
+    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = (AdminOrReadOnly, )
 
 
-class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Reviews.objects.all()
+class ReviewUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [AdminStaffOnly|AuthorModeratorAdminOrSafeMethodOnly]
+    permission_classes = (AuthorModeratorAdminOrSafeMethodOnly, AdminStaffOnly)
+
+
+class ReviewDestroy(generics.RetrieveDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = (AdminStaffOnly, AuthorModeratorAdminOrSafeMethodOnly)
 
 
 class CommentList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [AdminOrReadOnly]
+    permission_classes = (AdminOrReadOnly,)
 
 
-class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+class CommentUpdate(generics.RetrieveUpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [AdminStaffOnly | AuthorModeratorAdminOrSafeMethodOnly]
+    permission_classes = (AuthorModeratorAdminOrSafeMethodOnly, AdminStaffOnly)
+
+
+class CommentDestroy(generics.RetrieveDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = (AdminStaffOnly, AuthorModeratorAdminOrSafeMethodOnly)
 
 
 class ReviewHighlight(generics.GenericAPIView):
-    queryset = Reviews.objects.all()
+    queryset = Review.objects.all()
     renderer_classes = [renderers.StaticHTMLRenderer]
 
     def get(self, request, *args, **kwargs):
@@ -52,6 +64,6 @@ class CommentHighlight(generics.GenericAPIView):
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'reviews': reverse('review-list', request=request, format=format),
-        'comments': reverse('comment-list', request=request, format=format)
+        'review': reverse('review-list', request=request, format=format),
+        'comment': reverse('comment-list', request=request, format=format)
     })

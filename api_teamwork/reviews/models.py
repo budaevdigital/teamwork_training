@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from api_teamwork.settings import AUTH_USER_MODEL
+from titles.models import Title
 
 
 class Score(models.Model):
@@ -11,8 +12,8 @@ class Score(models.Model):
     voted_on = models.DateTimeField(auto_now=True)
 
 
-class Reviews(models.Model):
-    title = models.CharField(max_length=200)
+class Review(models.Model):
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
     text = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
     upd_date = models.DateTimeField(auto_now=True)
@@ -22,11 +23,16 @@ class Reviews(models.Model):
     class Meta:
         unique_together = ('author', 'score')
 
+    def __str__(self):
+        return self.title
+
 
 class Comment(models.Model):
-    post = models.ForeignKey(Reviews,
-                             related_name='comments',
-                             on_delete=models.CASCADE)
+    review = models.ForeignKey(Review,
+                               related_name='review',
+                               on_delete=models.CASCADE,
+                               blank=True,
+                               null=True)
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
@@ -39,4 +45,4 @@ class Comment(models.Model):
         ordering = ('name', 'author')
 
     def __str__(self):
-        return 'Comment by {} on {}'.format(self.name, self.post)
+        return self.name
